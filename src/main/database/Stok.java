@@ -10,19 +10,7 @@ public class Stok implements StokTemplate<Barang, String>{
     }
 
     @Override
-    public boolean tambahBarangBaru(Barang barang) {
-        for(Barang i: this.stok){                                               // Cek jika barang sudah ada
-            if(i.getKodeBarang().equals(barang.getNamaBarang())){
-                return false;                                                   // penambahan gagal karena Barang sudah ada
-            }
-        }
-        
-        this.stok.add(barang);
-        return true;                                                            // Penambahan barang berhasil
-    }
-
-    @Override
-    public Barang DetailDataBarang(String kodeBarang) {
+    public Barang detailDataBarang(String kodeBarang) {
         for(Barang i: this.stok){
             if(i.getKodeBarang().equals(kodeBarang))
                 return i;                                                       // barang ditemukan dan mengembalikan data barang
@@ -44,11 +32,16 @@ public class Stok implements StokTemplate<Barang, String>{
                         ix.getKodeBarang(), ix.getNamaBarang(),
                         ix.getHargaBarang(), ix.getStok() + jumlah));
                 
-                return true;                                                    // barang berhasil di restok
+                return true;
             }
         }
         
-        return false;                                                           // barang tidak di temukan
+        return false;
+    }
+    
+    @Override
+    public void restokBarang(Barang barang){
+        this.stok.add(barang);
     }
 
     @Override
