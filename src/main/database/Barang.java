@@ -6,19 +6,21 @@ public class Barang {
     private int hargaBarang;
     private int stok;
     
-    Barang(String kodeBarang, String namaBarang, int hargaBarang, int stokAwal){
+    public Barang(String kodeBarang, String namaBarang, int hargaBarang){
+        this.KODEBARANG = kodeBarang;
+        this.NAMABARANG = namaBarang;
+        this.hargaBarang = hargaBarang;
+        this.stok = 1;
+    }
+    
+    public Barang(String kodeBarang, String namaBarang, int hargaBarang, int stokAwal){
         this.KODEBARANG = kodeBarang;
         this.NAMABARANG = namaBarang;
         this.hargaBarang = hargaBarang;
         this.stok = stokAwal;
     }
     
-    Barang(String kodeBarang, String namaBarang, int hargaBarang){
-        this.KODEBARANG = kodeBarang;
-        this.NAMABARANG = namaBarang;
-        this.hargaBarang = hargaBarang;
-        this.stok = 1;
-    }
+    
 
     public String getKodeBarang() {
         return KODEBARANG;

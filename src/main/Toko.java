@@ -5,8 +5,8 @@ import main.database.Riwayat;
 import main.database.Stok;
 
 public class Toko {
-    Stok gudangToko;
-    Riwayat riwayatKeuanganToko;
+    private Stok gudangToko;
+    private Riwayat riwayatKeuanganToko;
     
     public Toko(){
         this.gudangToko = new Stok();
@@ -14,23 +14,22 @@ public class Toko {
     }
     
     public void lihatPersediaanBarang(){
-        int iteration = 0;
-        
-        for(Barang i: this.gudangToko.getDataStok()){
-            System.out.println("Barang Ke-"  + (iteration+1) + " : ");
-            System.out.println("    Kode : " + i.getKodeBarang());
-            System.out.println("    Nama : " + i.getNamaBarang());
-        }
+        this.gudangToko.lihatSemuaBarang();
     }
     
     public void beliBarang(String kodeBarang, int jumlah){
         Barang detailBarang = this.gudangToko.detailDataBarang(kodeBarang);
+        
         if(detailBarang != null){
-            this.gudangToko.ambilBarang(kodeBarang, jumlah);
-            this.riwayatKeuanganToko.addRiwayat(detailBarang, jumlah);          // Ter Register sebagai pemasukan
-            System.out.println();
+            if(jumlah <= detailBarang.getStok()){
+                this.gudangToko.ambilBarang(kodeBarang, jumlah);
+                this.riwayatKeuanganToko.addRiwayatPembelian(detailBarang, jumlah);          // Ter Register sebagai pemasukan
+                System.out.println("Pembelian Barang Berhasil !");
+            } else {
+                System.out.println("Pembelian Barang Gagal, Barang Habis");
+            }
         } else {
-            System.out.println("Pembelian Barang Gagal, barang habis, atau tidak ditemukan");
+            System.out.println("Pembelian Barang Gagal, tidak ditemukan");
         }
     }
     
@@ -40,16 +39,42 @@ public class Toko {
         } else {
             System.out.println("Restok berhasil");
             Barang barang = this.gudangToko.detailDataBarang(kodeBarang);
-            this.riwayatKeuanganToko.addRiwayat(barang, -jumlah);               // Ter register sebagai pengeluaran
+            this.gudangToko.restokBarang(kodeBarang, jumlah);
+            this.riwayatKeuanganToko.addRiwayatModal(barang, jumlah);                // Ter register sebagai pengeluaran
+        }
+    }
+    
+    public void buangBarang(String kodeBarang){
+        Barang barang = this.gudangToko.detailDataBarang(kodeBarang);
+        if(this.gudangToko.singkirkanBarang(kodeBarang)){
+            System.out.println("Barang berhasil di buang!");
+            this.riwayatKeuanganToko.addRiwayatModal(barang, barang.getStok());
+        } else {
+            System.out.println("Barang gagal di buang !");
+        }
+    }
+    
+    public void buangBarang(String kodeBarang, int jumlah){
+        Barang barang = this.gudangToko.detailDataBarang(kodeBarang);
+        if(this.gudangToko.singkirkanBarang(kodeBarang, jumlah)){
+            System.out.println("Barang berhasil di buang!");
+            this.riwayatKeuanganToko.addRiwayatModal(barang, jumlah);
+        } else {
+            System.out.println("Barang gagal di buang !");
         }
     }
     
     public void registerBarangBaru(Barang barang){
-        System.out.println("Barang baru ter register");
-        this.riwayatKeuanganToko.addRiwayat(barang, -barang.getStok());
+        System.out.println("Registrasi Barang berhasil !");
+        this.gudangToko.restokBarang(barang);
+        this.riwayatKeuanganToko.addRiwayatModal(barang, barang.getStok());
     }
     
     public void lihatRiwayat(){
         this.riwayatKeuanganToko.lihatRiwayat();
+    }
+    
+    public Stok getGudangToko(){
+        return this.gudangToko;
     }
 }
